@@ -100,6 +100,11 @@ public final class Games {
 				Store.applyPerks(p);
 			}
 		}
+		if (t % 10 == 0) {
+			for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
+				ArcadeBook.ensure(p);
+			}
+		}
 		if (t % 6000 == 0) Store.save();
 	}
 

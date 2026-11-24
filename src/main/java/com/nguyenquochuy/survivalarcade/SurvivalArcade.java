@@ -34,6 +34,12 @@ public class SurvivalArcade implements ModInitializer {
 			}
 		});
 
+		// gỡ sách khỏi túi đồ trước khi chết để không rơi ra đất; hồi sinh xong sẽ được cấp lại
+		ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) -> {
+			if (entity instanceof ServerPlayerEntity sp) ArcadeBook.strip(sp);
+			return true;
+		});
+
 		PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
 			if (player instanceof ServerPlayerEntity sp) {
 				Quests.onMine(sp, state);

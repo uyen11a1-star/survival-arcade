@@ -33,6 +33,7 @@ public final class ArcadeCommands {
 			.then(CommandManager.literal("buy")
 				.then(CommandManager.argument("item", StringArgumentType.word())
 					.executes(c -> buy(c.getSource(), StringArgumentType.getString(c, "item")))))
+			.then(CommandManager.literal("book").executes(c -> book(c.getSource())))
 			.then(CommandManager.literal("top").executes(c -> top(c.getSource())))
 			.then(CommandManager.literal("ach").executes(c -> ach(c.getSource()))));
 	}
@@ -66,6 +67,7 @@ public final class ArcadeCommands {
 			"/mg stop — dừng minigame đang chơi",
 			"/mg shop — mở menu cửa hàng điểm (hoặc /mg buy <món>)",
 			"/mg top — bảng xếp hạng",
+			"/mg book — lấy lại Sổ tay Arcade (bấm chữ để chơi)",
 			"/mg ach — thành tựu"
 		};
 		for (String l : lines) Store.say(p, l, Formatting.AQUA);
@@ -114,6 +116,13 @@ public final class ArcadeCommands {
 	private static int buy(ServerCommandSource src, String item) throws CommandSyntaxException {
 		ServerPlayerEntity p = src.getPlayerOrThrow();
 		Store.say(p, Shop.buy(p, item), Formatting.YELLOW);
+		return 1;
+	}
+
+	private static int book(ServerCommandSource src) throws CommandSyntaxException {
+		ServerPlayerEntity p = src.getPlayerOrThrow();
+		ArcadeBook.ensure(p);
+		Store.say(p, "Sổ tay Arcade đã ở trong túi đồ — cầm lên và bấm chuột phải để mở.", Formatting.AQUA);
 		return 1;
 	}
 
