@@ -132,7 +132,7 @@ public final class Games {
 	/** Bắt đầu minigame. Trả về thông báo lỗi, hoặc null nếu thành công. */
 	public static String begin(ServerPlayerEntity p, String kind, int arg) {
 		if (ACTIVE.containsKey(p.getUuid())) return "Bạn đang chơi một minigame rồi — dùng /mg stop để dừng.";
-		ServerWorld w = p.getServerWorld();
+		ServerWorld w = p.getEntityWorld();
 		Session s;
 		switch (kind) {
 			case "arena":
@@ -243,7 +243,7 @@ public final class Games {
 
 		@Override
 		boolean tick(ServerPlayerEntity p) {
-			if (p.getServerWorld() != w || Math.hypot(p.getX() - cx, p.getZ() - cz) > 50) {
+			if (p.getEntityWorld() != w || Math.hypot(p.getX() - cx, p.getZ() - cz) > 50) {
 				Store.say(p, "Bạn đã rời đấu trường!", Formatting.RED);
 				report(p);
 				return true;
@@ -338,7 +338,7 @@ public final class Games {
 
 		@Override
 		boolean tick(ServerPlayerEntity p) {
-			if (p.getServerWorld() != w) {
+			if (p.getEntityWorld() != w) {
 				Store.say(p, "Bạn rời Overworld — Sống sót bị hủy.", Formatting.RED);
 				return true;
 			}
@@ -516,7 +516,7 @@ public final class Games {
 
 		@Override
 		boolean tick(ServerPlayerEntity p) {
-			if (p.getServerWorld() != w) {
+			if (p.getEntityWorld() != w) {
 				Store.say(p, "Bạn rời Overworld — Giao hàng bị hủy.", Formatting.RED);
 				return true;
 			}
