@@ -1,0 +1,49 @@
+package com.nguyenquochuy.survivalarcade;
+
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.server.network.ServerPlayerEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class SurvivalArcade implements ModInitializer {
+	public static final String MOD_ID = "survivalarcade";
+	public static final Logger LOG = LoggerFactory.getLogger(MOD_ID);
+
+	@Override
+	public void onInitialize() {
+		CommandRegistrationCallback.EVENT.register(
+			(dispatcher, registryAccess, environment) -> ArcadeCommands.register(dispatcher));
+
+		ServerLifecycleEvents.SERVER_STARTED.register(Store::load);
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> Store.save());
+		ServerTickEvents.END_SERVER_TICK.register(Games::tick);
+
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			if (entity instanceof ServerPlayerEntity sp) {
+				Games.onPlayerDeath(sp);
+				return;
+			}
+			if (source.getAttacker() instanceof ServerPlayerEntity killer) {
+				Quests.onKill(killer, entity);
+			}
+		});
+
+		PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
+			if (player instanceof ServerPlayerEntity sp) {
+				Quests.onMine(sp, state);
+			}
+		});
+
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+			Games.drop(handler.player.getUuid());
+		});
+
+		LOG.info("Survival Arcade loaded");
+	}
+}

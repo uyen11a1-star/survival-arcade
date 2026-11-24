@@ -1,0 +1,20 @@
+{
+	"schemaVersion": 1,
+	"id": "survivalarcade",
+	"version": "${version}",
+	"name": "Survival Arcade",
+	"description": "Minigame ngay trong sinh tồn: Daily Quest, Đấu trường, Rush, Rèn đồ, Sống sót, Giao hàng, Cửa hàng điểm, Cấp độ & Sự kiện tuần.",
+	"authors": ["nguyenquochuy"],
+	"license": "MIT",
+	"icon": "assets/survivalarcade/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": ["com.nguyenquochuy.survivalarcade.SurvivalArcade"]
+	},
+	"depends": {
+		"fabricloader": ">=0.17.3",
+		"minecraft": "~1.21.10",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
