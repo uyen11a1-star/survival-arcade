@@ -33,6 +33,7 @@ public final class ArcadeCommands {
 			.then(CommandManager.literal("buy")
 				.then(CommandManager.argument("item", StringArgumentType.word())
 					.executes(c -> buy(c.getSource(), StringArgumentType.getString(c, "item")))))
+			.then(CommandManager.literal("top").executes(c -> top(c.getSource())))
 			.then(CommandManager.literal("ach").executes(c -> ach(c.getSource()))));
 	}
 
@@ -63,7 +64,8 @@ public final class ArcadeCommands {
 			"/mg forge — chế đúng món trong thời gian giới hạn",
 			"/mg delivery — giao hàng tới tọa độ xa",
 			"/mg stop — dừng minigame đang chơi",
-			"/mg shop — cửa hàng điểm, /mg buy <món> để mua",
+			"/mg shop — mở menu cửa hàng điểm (hoặc /mg buy <món>)",
+			"/mg top — bảng xếp hạng",
 			"/mg ach — thành tựu"
 		};
 		for (String l : lines) Store.say(p, l, Formatting.AQUA);
@@ -96,13 +98,16 @@ public final class ArcadeCommands {
 	}
 
 	private static int shop(ServerCommandSource src) throws CommandSyntaxException {
+		ShopMenu.open(src.getPlayerOrThrow());
+		return 1;
+	}
+
+	private static int top(ServerCommandSource src) throws CommandSyntaxException {
 		ServerPlayerEntity p = src.getPlayerOrThrow();
-		Store.PData d = Store.get(p);
-		Store.say(p, "=== Cửa hàng điểm (bạn có " + d.points + " điểm) ===", Formatting.GOLD);
-		for (Shop.Good g : Shop.ALL) {
-			Store.say(p, g.id() + " — " + g.label() + " — " + g.cost() + " điểm (cần cấp " + g.minLevel() + ")", Formatting.WHITE);
-		}
-		Store.say(p, "Mua: /mg buy <món>", Formatting.GRAY);
+		java.util.List<String> rows = Store.top(10);
+		Store.say(p, "=== Bảng xếp hạng ===", Formatting.GOLD);
+		if (rows.isEmpty()) Store.say(p, "Chưa có ai trên bảng.", Formatting.GRAY);
+		for (String r : rows) Store.say(p, r, Formatting.WHITE);
 		return 1;
 	}
 

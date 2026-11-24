@@ -19,15 +19,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.temporal.IsoFields;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public final class Store {
 	public static class PData {
 		public int points, xp, kills, mined, quests, bestWave, delivered, rushWins, surviveWins, forgeWins;
+		public String name;
 		public Set<String> ach = new HashSet<>();
 		public String dailyDate = "";
 		public String dailyId = "";
@@ -85,7 +88,22 @@ public final class Store {
 	}
 
 	public static PData get(ServerPlayerEntity p) {
-		return data.computeIfAbsent(p.getUuid().toString(), k -> new PData());
+		PData d = data.computeIfAbsent(p.getUuid().toString(), k -> new PData());
+		d.name = p.getName().getString();
+		return d;
+	}
+
+	/** Bảng xếp hạng theo tổng XP. */
+	public static List<String> top(int n) {
+		List<PData> l = new ArrayList<>();
+		for (PData d : data.values()) if (d.xp > 0) l.add(d);
+		l.sort((a, b) -> Integer.compare(b.xp, a.xp));
+		List<String> out = new ArrayList<>();
+		for (int i = 0; i < Math.min(n, l.size()); i++) {
+			PData d = l.get(i);
+			out.add((i + 1) + ". " + (d.name == null ? "???" : d.name) + " — cấp " + level(d.xp) + " (" + d.xp + " XP)");
+		}
+		return out;
 	}
 
 	// ---------- cấp độ ----------
@@ -123,6 +141,7 @@ public final class Store {
 		int after = level(d.xp);
 		if (after > before) {
 			say(p, "Lên cấp " + after + "!", Formatting.GOLD);
+			Fx.levelUp(p, after);
 		}
 		if (after >= 5) grant(p, "lv_5");
 		if (after >= 10) grant(p, "lv_10");
@@ -135,6 +154,7 @@ public final class Store {
 		d.points += 10;
 		d.xp += 10;
 		say(p, "Thành tựu: " + ACH.get(id) + " (+10 điểm)", Formatting.AQUA);
+		Fx.achievement(p);
 	}
 
 	// ---------- hiệu ứng vĩnh viễn theo cấp ----------

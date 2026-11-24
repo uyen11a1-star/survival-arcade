@@ -106,6 +106,7 @@ public final class Quests {
 		p.getInventory().offerOrDrop(q.reward().get());
 		p.addExperience(30);
 		Store.say(p, "Xong thử thách ngày: " + q.text() + "! +" + got + " điểm, +" + q.rewardText() + ", +30 XP", Formatting.GREEN);
+		Fx.win(p, "HOÀN THÀNH", q.text());
 		Store.grant(p, "first_quest");
 		if (d.quests >= 10) Store.grant(p, "quests_10");
 	}

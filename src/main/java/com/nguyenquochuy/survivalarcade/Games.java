@@ -59,6 +59,7 @@ public final class Games {
 
 		void onDeath(ServerPlayerEntity p) {
 			Store.say(p, name + " kết thúc vì bạn đã gục.", Formatting.RED);
+			Fx.lose(p, name);
 		}
 
 		void onStop(ServerPlayerEntity p) {
@@ -131,7 +132,7 @@ public final class Games {
 	/** Bắt đầu minigame. Trả về thông báo lỗi, hoặc null nếu thành công. */
 	public static String begin(ServerPlayerEntity p, String kind, int arg) {
 		if (ACTIVE.containsKey(p.getUuid())) return "Bạn đang chơi một minigame rồi — dùng /mg stop để dừng.";
-		ServerWorld w = p.getEntityWorld();
+		ServerWorld w = p.getServerWorld();
 		Session s;
 		switch (kind) {
 			case "arena":
@@ -242,7 +243,7 @@ public final class Games {
 
 		@Override
 		boolean tick(ServerPlayerEntity p) {
-			if (p.getEntityWorld() != w || Math.hypot(p.getX() - cx, p.getZ() - cz) > 50) {
+			if (p.getServerWorld() != w || Math.hypot(p.getX() - cx, p.getZ() - cz) > 50) {
 				Store.say(p, "Bạn đã rời đấu trường!", Formatting.RED);
 				report(p);
 				return true;
@@ -280,6 +281,7 @@ public final class Games {
 				return;
 			}
 			Store.say(p, "Đợt " + wave + ": " + total + " quái!", Formatting.YELLOW);
+			Fx.waveStart(p, wave, total);
 		}
 
 		void clearWave(ServerPlayerEntity p) {
@@ -288,6 +290,7 @@ public final class Games {
 			Store.PData d = Store.get(p);
 			if (cleared > d.bestWave) d.bestWave = cleared;
 			Store.say(p, "Vượt qua đợt " + wave + "! +" + got + " điểm", Formatting.GREEN);
+			Fx.waveClear(p, wave);
 			if (cleared >= 5) Store.grant(p, "wave_5");
 			if (cleared >= 10) Store.grant(p, "wave_10");
 			waiting = true;
@@ -296,6 +299,7 @@ public final class Games {
 
 		void report(ServerPlayerEntity p) {
 			Store.say(p, "Đấu trường kết thúc — vượt qua " + cleared + " đợt (kỷ lục: " + Store.get(p).bestWave + ").", Formatting.GOLD);
+			Fx.title(p, "KẾT THÚC", "Vượt qua " + cleared + " đợt", Formatting.GOLD);
 		}
 
 		@Override
@@ -334,7 +338,7 @@ public final class Games {
 
 		@Override
 		boolean tick(ServerPlayerEntity p) {
-			if (p.getEntityWorld() != w) {
+			if (p.getServerWorld() != w) {
 				Store.say(p, "Bạn rời Overworld — Sống sót bị hủy.", Formatting.RED);
 				return true;
 			}
@@ -344,6 +348,7 @@ public final class Games {
 				Store.get(p).surviveWins++;
 				Store.grant(p, "survivor");
 				Store.say(p, "Bạn đã sống sót " + minutes + " phút! +" + got + " điểm, +" + (20 * minutes) + " XP", Formatting.GREEN);
+				Fx.win(p, "CHIẾN THẮNG", "Sống sót " + minutes + " phút");
 				return true;
 			}
 			if (age % 20 == 0) pruneDead(w, mobs);
@@ -422,12 +427,14 @@ public final class Games {
 					Store.get(p).rushWins++;
 					Store.grant(p, "rusher");
 					Store.say(p, "Rush hoàn thành! +" + got + " điểm, Speed II + Haste II trong 3 phút.", Formatting.GREEN);
+					Fx.win(p, "CHIẾN THẮNG", "Rush Mode");
 					return true;
 				}
 			}
 			int left = TIME - age;
 			if (left <= 0) {
 				Store.say(p, "Hết giờ! Rush Mode thất bại.", Formatting.RED);
+				Fx.lose(p, "Rush Mode hết giờ");
 				return true;
 			}
 			bar.setName(Text.literal("Rush Mode — còn " + mmss(left)));
@@ -471,11 +478,13 @@ public final class Games {
 				Store.get(p).forgeWins++;
 				Store.grant(p, "smith");
 				Store.say(p, "Rèn xong " + job.label() + "! +" + got + " điểm, nhận " + job.rewardLabel() + ".", Formatting.GREEN);
+				Fx.win(p, "CHIẾN THẮNG", "Rèn xong " + job.label());
 				return true;
 			}
 			int left = total - age;
 			if (left <= 0) {
 				Store.say(p, "Hết giờ! Rèn đồ thất bại.", Formatting.RED);
+				Fx.lose(p, "Rèn đồ hết giờ");
 				return true;
 			}
 			bar.setName(Text.literal("Rèn " + job.label() + " — còn " + mmss(left)));
@@ -507,7 +516,7 @@ public final class Games {
 
 		@Override
 		boolean tick(ServerPlayerEntity p) {
-			if (p.getEntityWorld() != w) {
+			if (p.getServerWorld() != w) {
 				Store.say(p, "Bạn rời Overworld — Giao hàng bị hủy.", Formatting.RED);
 				return true;
 			}
@@ -521,11 +530,13 @@ public final class Games {
 				Store.grant(p, "courier");
 				if (dist >= 300) Store.grant(p, "far_courier");
 				Store.say(p, "Giao hàng thành công! +" + got + " điểm, +" + (dist / 5) + " XP", Formatting.GREEN);
+				Fx.win(p, "CHIẾN THẮNG", "Giao hàng thành công");
 				return true;
 			}
 			int left = LIMIT - age;
 			if (left <= 0) {
 				Store.say(p, "Hết giờ! Giao hàng thất bại.", Formatting.RED);
+				Fx.lose(p, "Giao hàng hết giờ");
 				return true;
 			}
 			if (age % 20 == 0) {
