@@ -95,6 +95,7 @@ public final class Games {
 			}
 		}
 		int t = server.getTicks();
+		Fx.tick();
 		if (t % 100 == 0) {
 			for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
 				Store.applyPerks(p);
@@ -104,6 +105,17 @@ public final class Games {
 			for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
 				ArcadeBook.ensure(p);
 			}
+		}
+		if (t % 3 == 0) {
+			for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
+				if (p.isAlive() && !p.isSpectator()) Aura.tick(p, t);
+			}
+		}
+		if (t % 20 == 0) {
+			for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
+				if (p.isAlive()) Quests.login(p);
+			}
+			Events.tick(server, t);
 		}
 		if (t % 6000 == 0) Store.save();
 	}
@@ -296,6 +308,7 @@ public final class Games {
 			if (cleared > d.bestWave) d.bestWave = cleared;
 			Store.say(p, "Vượt qua đợt " + wave + "! +" + got + " điểm", Formatting.GREEN);
 			Fx.waveClear(p, wave);
+			Quests.arenaWave(p, cleared);
 			if (cleared >= 5) Store.grant(p, "wave_5");
 			if (cleared >= 10) Store.grant(p, "wave_10");
 			waiting = true;

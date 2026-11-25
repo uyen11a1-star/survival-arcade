@@ -33,6 +33,11 @@ public final class ArcadeCommands {
 			.then(CommandManager.literal("buy")
 				.then(CommandManager.argument("item", StringArgumentType.word())
 					.executes(c -> buy(c.getSource(), StringArgumentType.getString(c, "item")))))
+			.then(CommandManager.literal("weekly").executes(c -> weekly(c.getSource())))
+			.then(CommandManager.literal("skill")
+				.then(CommandManager.literal("dash").executes(c -> skill(c.getSource(), "dash")))
+				.then(CommandManager.literal("heal").executes(c -> skill(c.getSource(), "heal")))
+				.then(CommandManager.literal("shock").executes(c -> skill(c.getSource(), "shock"))))
 			.then(CommandManager.literal("book").executes(c -> book(c.getSource())))
 			.then(CommandManager.literal("top").executes(c -> top(c.getSource())))
 			.then(CommandManager.literal("ach").executes(c -> ach(c.getSource()))));
@@ -49,6 +54,8 @@ public final class ArcadeCommands {
 		Store.say(p, "Cấp " + lv + " (" + next + ")  |  Điểm: " + d.points, Formatting.WHITE);
 		Store.say(p, "Sự kiện tuần: " + w.name() + " — điểm từ minigame " + w.catLabel() + " nhân đôi!", Formatting.LIGHT_PURPLE);
 		Store.say(p, "Thử thách ngày: " + Quests.describe(p), Formatting.YELLOW);
+		Store.say(p, "Nhiệm vụ tuần: " + Quests.describeWeekly(p), Formatting.YELLOW);
+		if (d.streak > 0) Store.say(p, "Chuỗi đăng nhập: " + d.streak + " ngày", Formatting.AQUA);
 		if (cur != null) Store.say(p, "Đang chơi: " + cur, Formatting.GREEN);
 		Store.say(p, "Gõ /mg help để xem toàn bộ lệnh.", Formatting.GRAY);
 		return 1;
@@ -59,6 +66,8 @@ public final class ArcadeCommands {
 		String[] lines = {
 			"/mg — trạng thái, cấp, điểm, sự kiện tuần",
 			"/mg daily — thử thách ngày",
+			"/mg weekly — nhiệm vụ tuần",
+			"/mg skill dash|heal|shock — kỹ năng chủ động",
 			"/mg arena — đấu trường (các đợt quái tăng dần)",
 			"/mg survive [phút] — sống sót 1–10 phút",
 			"/mg rush — gom tài nguyên trong 5 phút",
@@ -116,6 +125,22 @@ public final class ArcadeCommands {
 	private static int buy(ServerCommandSource src, String item) throws CommandSyntaxException {
 		ServerPlayerEntity p = src.getPlayerOrThrow();
 		Store.say(p, Shop.buy(p, item), Formatting.YELLOW);
+		return 1;
+	}
+
+	private static int weekly(ServerCommandSource src) throws CommandSyntaxException {
+		ServerPlayerEntity p = src.getPlayerOrThrow();
+		Store.say(p, "Nhiệm vụ tuần: " + Quests.describeWeekly(p), Formatting.YELLOW);
+		return 1;
+	}
+
+	private static int skill(ServerCommandSource src, String id) throws CommandSyntaxException {
+		ServerPlayerEntity p = src.getPlayerOrThrow();
+		String err = Skills.use(p, id);
+		if (err != null) {
+			src.sendError(Text.literal(err));
+			return 0;
+		}
 		return 1;
 	}
 

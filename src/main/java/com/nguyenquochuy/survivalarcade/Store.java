@@ -36,6 +36,12 @@ public final class Store {
 		public String dailyId = "";
 		public int dailyProgress;
 		public boolean dailyDone;
+		public String lastLogin = "";
+		public int streak;
+		public String weeklyKey = "";
+		public String weeklyId = "";
+		public int weeklyProgress;
+		public boolean weeklyDone;
 	}
 
 	public record Weekly(String name, String cat, String catLabel) {}
@@ -54,6 +60,10 @@ public final class Store {
 		ACH.put("far_courier", "Hành trình xa (giao hàng từ 300 block)");
 		ACH.put("lv_5", "Cấp 5");
 		ACH.put("lv_10", "Cấp 10");
+		ACH.put("boss_slayer", "Kẻ diệt boss");
+		ACH.put("bounty_hunter", "Thợ săn tiền thưởng");
+		ACH.put("weekly_1", "Nhiệm vụ tuần đầu tiên");
+		ACH.put("streak_7", "Chuỗi đăng nhập 7 ngày");
 	}
 
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -142,6 +152,9 @@ public final class Store {
 		if (after > before) {
 			say(p, "Lên cấp " + after + "!", Formatting.GOLD);
 			Fx.levelUp(p, after);
+			if (after % 5 == 0 && server != null) {
+				server.getPlayerManager().broadcast(Text.literal("✦ " + p.getName().getString() + " đã đạt cấp " + after + "!").formatted(Formatting.LIGHT_PURPLE), false);
+			}
 		}
 		if (after >= 5) grant(p, "lv_5");
 		if (after >= 10) grant(p, "lv_10");

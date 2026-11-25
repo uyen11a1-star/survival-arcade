@@ -25,6 +25,7 @@ public class SurvivalArcade implements ModInitializer {
 		ServerTickEvents.END_SERVER_TICK.register(Games::tick);
 
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			Events.onDeath(entity, source);
 			if (entity instanceof ServerPlayerEntity sp) {
 				Games.onPlayerDeath(sp);
 				return;
