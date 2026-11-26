@@ -33,6 +33,7 @@ public final class ArcadeCommands {
 			.then(CommandManager.literal("buy")
 				.then(CommandManager.argument("item", StringArgumentType.word())
 					.executes(c -> buy(c.getSource(), StringArgumentType.getString(c, "item")))))
+			.then(CommandManager.literal("recipes").executes(c -> recipes(c.getSource())))
 			.then(CommandManager.literal("tree").executes(c -> tree(c.getSource(), null))
 				.then(CommandManager.literal("dash").executes(c -> tree(c.getSource(), "dash")))
 				.then(CommandManager.literal("heal").executes(c -> tree(c.getSource(), "heal")))
@@ -75,6 +76,7 @@ public final class ArcadeCommands {
 			"/mg skill dash|heal|shock — kỹ năng chủ động",
 			"/mg tree — cây kỹ năng (nâng bằng điểm)",
 			"/mg upgrade — nâng cấp vũ khí độc quyền đang cầm",
+			"/mg recipes — công thức vật phẩm độc quyền (menu rương)",
 			"/mg arena — đấu trường (các đợt quái tăng dần)",
 			"/mg survive [phút] — sống sót 1–10 phút",
 			"/mg rush — gom tài nguyên trong 5 phút",
@@ -145,6 +147,11 @@ public final class ArcadeCommands {
 			String tail = lv >= Skills.MAX_TREE ? " — tối đa" : " — nâng: " + (30 * (lv + 1)) + " điểm (/mg tree " + s.id() + ")";
 			Store.say(p, s.name() + ": bậc " + lv + "/" + Skills.MAX_TREE + tail, Formatting.WHITE);
 		}
+		return 1;
+	}
+
+	private static int recipes(ServerCommandSource src) throws CommandSyntaxException {
+		RecipeMenu.openCatalog(src.getPlayerOrThrow());
 		return 1;
 	}
 

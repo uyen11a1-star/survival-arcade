@@ -28,6 +28,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
@@ -61,7 +62,47 @@ public final class ArcadeItems {
 
 	private static final Pattern TIER = Pattern.compile("\\+(\\d+)$");
 
+	private static final Map<String, Item> VANILLA = Map.ofEntries(
+		Map.entry("minecraft:lightning_rod", Items.LIGHTNING_ROD),
+		Map.entry("minecraft:netherite_sword", Items.NETHERITE_SWORD),
+		Map.entry("minecraft:diamond_block", Items.DIAMOND_BLOCK),
+		Map.entry("minecraft:ender_pearl", Items.ENDER_PEARL),
+		Map.entry("minecraft:ender_eye", Items.ENDER_EYE),
+		Map.entry("minecraft:blaze_rod", Items.BLAZE_ROD),
+		Map.entry("minecraft:redstone_block", Items.REDSTONE_BLOCK),
+		Map.entry("minecraft:netherite_pickaxe", Items.NETHERITE_PICKAXE),
+		Map.entry("minecraft:emerald", Items.EMERALD),
+		Map.entry("minecraft:diamond", Items.DIAMOND),
+		Map.entry("minecraft:totem_of_undying", Items.TOTEM_OF_UNDYING),
+		Map.entry("minecraft:compass", Items.COMPASS),
+		Map.entry("minecraft:nether_star", Items.NETHER_STAR),
+		Map.entry("minecraft:stick", Items.STICK),
+		Map.entry("minecraft:heart_of_the_sea", Items.HEART_OF_THE_SEA)
+	);
+
 	private ArcadeItems() {}
+
+	/** Vật phẩm vanilla theo id (dùng cho menu công thức). */
+	public static Item vanilla(String id) {
+		Item i = VANILLA.get(id);
+		return i == null ? Items.BARRIER : i;
+	}
+
+	/** Stack chỉ để hiển thị trong menu công thức, giống hệt món chế tạo ra (tên, mô tả, model riêng). */
+	public static ItemStack display(RecipeData.R r, boolean hint) {
+		ItemStack s = new ItemStack(vanilla(r.base()));
+		s.set(DataComponentTypes.CUSTOM_NAME, Text.literal(r.title()).formatted(r.color(), Formatting.BOLD).styled(st -> st.withItalic(false)));
+		List<Text> lore = new ArrayList<>();
+		for (String l : r.lore()) lore.add(line(l, Formatting.GRAY));
+		if (hint) {
+			lore.add(line(" ", Formatting.GRAY));
+			lore.add(line("▶ Bấm để xem công thức chế tạo", Formatting.YELLOW));
+		}
+		s.set(DataComponentTypes.LORE, new LoreComponent(lore));
+		s.set(DataComponentTypes.ITEM_MODEL, Identifier.of(NS, r.id()));
+		s.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
+		return s;
+	}
 
 	// =====================================================================
 	// Nhận diện
