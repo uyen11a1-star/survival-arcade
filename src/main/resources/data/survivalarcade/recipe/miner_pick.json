@@ -1,0 +1,50 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "DRD",
+    " P "
+  ],
+  "key": {
+    "D": "minecraft:diamond_block",
+    "R": "minecraft:redstone_block",
+    "P": "minecraft:netherite_pickaxe"
+  },
+  "result": {
+    "id": "minecraft:netherite_pickaxe",
+    "count": 1,
+    "components": {
+      "minecraft:custom_name": {
+        "text": "Cúp Thợ Mỏ",
+        "color": "light_purple",
+        "bold": true,
+        "italic": false
+      },
+      "minecraft:lore": [
+        {
+          "text": "Cầm trên tay: đào nhanh",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "Đào quặng: phá cả mạch quặng",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "(ngồi xuống để tắt)",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "Không bao giờ hỏng",
+          "color": "gray",
+          "italic": false
+        }
+      ],
+      "minecraft:item_model": "survivalarcade:miner_pick",
+      "minecraft:enchantment_glint_override": true,
+      "minecraft:unbreakable": {}
+    }
+  }
+}

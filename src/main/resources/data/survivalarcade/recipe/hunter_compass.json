@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " E ",
+    "ECE",
+    " R "
+  ],
+  "key": {
+    "E": "minecraft:ender_eye",
+    "C": "minecraft:compass",
+    "R": "minecraft:redstone_block"
+  },
+  "result": {
+    "id": "minecraft:compass",
+    "count": 1,
+    "components": {
+      "minecraft:custom_name": {
+        "text": "La Bàn Săn Mồi",
+        "color": "yellow",
+        "bold": true,
+        "italic": false
+      },
+      "minecraft:lore": [
+        {
+          "text": "Cầm lên để chỉ hướng boss và bounty",
+          "color": "gray",
+          "italic": false
+        }
+      ],
+      "minecraft:item_model": "survivalarcade:hunter_compass",
+      "minecraft:enchantment_glint_override": true
+    }
+  }
+}

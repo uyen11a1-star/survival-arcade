@@ -1,0 +1,50 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "TNT",
+    " R ",
+    " R "
+  ],
+  "key": {
+    "T": "minecraft:totem_of_undying",
+    "N": "minecraft:nether_star",
+    "R": "minecraft:blaze_rod"
+  },
+  "result": {
+    "id": "minecraft:blaze_rod",
+    "count": 1,
+    "components": {
+      "minecraft:custom_name": {
+        "text": "Gậy Quyền Năng",
+        "color": "gold",
+        "bold": true,
+        "italic": false
+      },
+      "minecraft:lore": [
+        {
+          "text": "Vũ khí hiếm nhất, mạnh nhất",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "Chuột phải: dùng kỹ năng hiện tại",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "Ngồi + chuột phải: đổi kỹ năng",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "5 kỹ năng: Thiên Thạch, Bão Sét, Hố Đen, Hỏa Phụng, Ngưng Đọng",
+          "color": "gray",
+          "italic": false
+        }
+      ],
+      "minecraft:item_model": "survivalarcade:power_wand",
+      "minecraft:enchantment_glint_override": true
+    }
+  }
+}

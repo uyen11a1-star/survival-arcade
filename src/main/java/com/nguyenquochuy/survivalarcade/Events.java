@@ -13,6 +13,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -39,6 +40,7 @@ public final class Events {
 	private static int lastBoss = -9000; // cho phép boss đầu tiên xuất hiện sau ~2,5 phút
 	private static boolean bossSpawning;
 	private static ServerBossBar bossBar;
+	private static double bossX, bossZ;
 
 	// ---- Bounty ----
 	private static UUID bountyId;
@@ -46,6 +48,7 @@ public final class Events {
 	private static String bountyName = "";
 	private static int bountyEnd;
 	private static int lastBounty = -3000;
+	private static double bountyX, bountyZ;
 	private static final String[] BOUNTY_NAMES = {"Kẻ Săn Đêm", "Bóng Ma Đỏ", "Hung Thần", "Sát Thủ Vô Danh", "Lưỡi Hái Câm"};
 
 	private Events() {}
@@ -144,13 +147,15 @@ public final class Events {
 		m.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 20 * 60 * 10, 0, false, false));
 
 		bossId = m.getUuid();
+		bossX = m.getX();
+		bossZ = m.getZ();
 		bossWorld = w;
 		bossName = name;
 		bossLevel = lv;
 		bossEnd = Store.server.getTicks() + 20 * 60 * 10;
 		bossBar = new ServerBossBar(Text.literal("BOSS: " + name), BossBar.Color.RED, BossBar.Style.PROGRESS);
 
-		announce("⚠ " + name + " xuất hiện gần " + q.getName().getString() + "!", Formatting.RED);
+		announce("⚠ " + name + " xuất hiện gần " + q.getName().getString() + "! (X " + (int) m.getX() + ", Z " + (int) m.getZ() + ")", Formatting.RED);
 		Fx.title(q, "BOSS XUẤT HIỆN", name, Formatting.DARK_RED);
 		Fx.sound(q, SoundEvents.ENTITY_WITHER_SPAWN, 0.7f);
 		Fx.expandingRing(w, m.getX(), m.getY() + 0.2, m.getZ(), 8, ParticleTypes.SOUL_FIRE_FLAME);
@@ -169,9 +174,13 @@ public final class Events {
 		}
 		LivingEntity le = (LivingEntity) e;
 		bossBar.setPercent(Math.max(0f, Math.min(1f, le.getHealth() / le.getMaxHealth())));
+		bossX = e.getX();
+		bossZ = e.getZ();
+		bossBar.setName(Text.literal("BOSS: " + bossName + "  |  X " + (int) bossX + "  Z " + (int) bossZ));
 		for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
 			if (p.getEntityWorld() == bossWorld && p.squaredDistanceTo(e) < 80 * 80) bossBar.addPlayer(p);
 			else bossBar.removePlayer(p);
+			showTrack(p, bossWorld, e, "BOSS", ParticleTypes.SOUL_FIRE_FLAME, true);
 		}
 		// hào quang lửa linh hồn quanh boss
 		Fx.ringAt(bossWorld, e.getX(), e.getY() + 0.1, e.getZ(), 2.5, ParticleTypes.SOUL_FIRE_FLAME, 20);
@@ -211,7 +220,7 @@ public final class Events {
 
 	private static void tickBounty(MinecraftServer server, int t) {
 		if (bountyId != null) {
-			updateBounty();
+			updateBounty(server);
 			return;
 		}
 		if (bossId != null || bossSpawning) return;
@@ -235,6 +244,8 @@ public final class Events {
 		m.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 6000, 0, false, false));
 
 		bountyId = m.getUuid();
+		bountyX = m.getX();
+		bountyZ = m.getZ();
 		bountyWorld = w;
 		bountyName = name;
 		bountyEnd = Store.server.getTicks() + 6000;
@@ -248,7 +259,7 @@ public final class Events {
 		Fx.sound(p, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 0.8f);
 	}
 
-	private static void updateBounty() {
+	private static void updateBounty(MinecraftServer server) {
 		Entity e = bountyWorld.getEntity(bountyId);
 		if (e == null || !e.isAlive()) {
 			endBounty();
@@ -261,6 +272,11 @@ public final class Events {
 			return;
 		}
 		Fx.ringAt(bountyWorld, e.getX(), e.getY() + 0.1, e.getZ(), 1.5, ParticleTypes.FLAME, 12);
+		bountyX = e.getX();
+		bountyZ = e.getZ();
+		for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
+			showTrack(p, bountyWorld, e, "★ BOUNTY", ParticleTypes.FLAME, ArcadeItems.holdingCompass(p));
+		}
 	}
 
 	private static void endBounty() {
@@ -281,6 +297,45 @@ public final class Events {
 			Store.say(k, "Thưởng bounty: +" + got + " điểm, 6 ngọc lục bảo, 1 kim cương, 80 XP", Formatting.GREEN);
 			announce("★ " + k.getName().getString() + " đã hạ " + name + "!", Formatting.GOLD);
 		}
+	}
+
+	// =====================================================================
+	// Chỉ vị trí: mũi tên theo hướng nhìn, khoảng cách, cột sáng trên trời
+	// =====================================================================
+
+	private static final String[] ARROWS = {"↑", "↗", "→", "↘", "↓", "↙", "←", "↖"};
+
+	static String arrow(ServerPlayerEntity p, double tx, double tz) {
+		double dx = tx - p.getX();
+		double dz = tz - p.getZ();
+		double bearing = Math.toDegrees(Math.atan2(dx, -dz));
+		if (bearing < 0) bearing += 360.0;
+		double heading = (p.getYaw() + 180.0) % 360.0;
+		if (heading < 0) heading += 360.0;
+		double rel = (bearing - heading + 360.0) % 360.0;
+		return ARROWS[(int) Math.round(rel / 45.0) % 8];
+	}
+
+	private static void showTrack(ServerPlayerEntity p, ServerWorld w, Entity e, String label, ParticleEffect beam, boolean showArrow) {
+		if (p.getEntityWorld() != w) return;
+		double d = Math.sqrt(p.squaredDistanceTo(e));
+		if (d < 300) Fx.beam(w, p, e.getX(), e.getY(), e.getZ(), beam);
+		if (showArrow && d < 800 && Games.current(p) == null) {
+			Store.bar(p, label + " " + arrow(p, e.getX(), e.getZ()) + " " + (int) d + "m");
+		}
+	}
+
+	/** Dòng thông tin cho La Bàn Săn Mồi. */
+	public static String trackLine(ServerPlayerEntity p) {
+		if (bossId != null && bossWorld != null && p.getEntityWorld() == bossWorld) {
+			return "BOSS " + arrow(p, bossX, bossZ) + " " + (int) Math.hypot(bossX - p.getX(), bossZ - p.getZ())
+				+ "m  (X " + (int) bossX + " Z " + (int) bossZ + ")";
+		}
+		if (bountyId != null && bountyWorld != null && p.getEntityWorld() == bountyWorld) {
+			return "★ BOUNTY " + arrow(p, bountyX, bountyZ) + " " + (int) Math.hypot(bountyX - p.getX(), bountyZ - p.getZ())
+				+ "m  (X " + (int) bountyX + " Z " + (int) bountyZ + ")";
+		}
+		return "La Bàn Săn Mồi: chưa có mục tiêu";
 	}
 
 	// =====================================================================

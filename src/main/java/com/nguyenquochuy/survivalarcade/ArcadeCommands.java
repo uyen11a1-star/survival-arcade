@@ -33,6 +33,11 @@ public final class ArcadeCommands {
 			.then(CommandManager.literal("buy")
 				.then(CommandManager.argument("item", StringArgumentType.word())
 					.executes(c -> buy(c.getSource(), StringArgumentType.getString(c, "item")))))
+			.then(CommandManager.literal("tree").executes(c -> tree(c.getSource(), null))
+				.then(CommandManager.literal("dash").executes(c -> tree(c.getSource(), "dash")))
+				.then(CommandManager.literal("heal").executes(c -> tree(c.getSource(), "heal")))
+				.then(CommandManager.literal("shock").executes(c -> tree(c.getSource(), "shock"))))
+			.then(CommandManager.literal("upgrade").executes(c -> upgrade(c.getSource())))
 			.then(CommandManager.literal("weekly").executes(c -> weekly(c.getSource())))
 			.then(CommandManager.literal("skill")
 				.then(CommandManager.literal("dash").executes(c -> skill(c.getSource(), "dash")))
@@ -68,6 +73,8 @@ public final class ArcadeCommands {
 			"/mg daily — thử thách ngày",
 			"/mg weekly — nhiệm vụ tuần",
 			"/mg skill dash|heal|shock — kỹ năng chủ động",
+			"/mg tree — cây kỹ năng (nâng bằng điểm)",
+			"/mg upgrade — nâng cấp vũ khí độc quyền đang cầm",
 			"/mg arena — đấu trường (các đợt quái tăng dần)",
 			"/mg survive [phút] — sống sót 1–10 phút",
 			"/mg rush — gom tài nguyên trong 5 phút",
@@ -125,6 +132,25 @@ public final class ArcadeCommands {
 	private static int buy(ServerCommandSource src, String item) throws CommandSyntaxException {
 		ServerPlayerEntity p = src.getPlayerOrThrow();
 		Store.say(p, Shop.buy(p, item), Formatting.YELLOW);
+		return 1;
+	}
+
+	private static int tree(ServerCommandSource src, String id) throws CommandSyntaxException {
+		ServerPlayerEntity p = src.getPlayerOrThrow();
+		if (id != null) Store.say(p, Skills.upgrade(p, id), Formatting.YELLOW);
+		Store.PData d = Store.get(p);
+		Store.say(p, "=== Cây kỹ năng (bạn có " + d.points + " điểm) ===", Formatting.GOLD);
+		for (Skills.Skill s : Skills.ALL) {
+			int lv = Skills.treeLv(p, s.id());
+			String tail = lv >= Skills.MAX_TREE ? " — tối đa" : " — nâng: " + (30 * (lv + 1)) + " điểm (/mg tree " + s.id() + ")";
+			Store.say(p, s.name() + ": bậc " + lv + "/" + Skills.MAX_TREE + tail, Formatting.WHITE);
+		}
+		return 1;
+	}
+
+	private static int upgrade(ServerCommandSource src) throws CommandSyntaxException {
+		ServerPlayerEntity p = src.getPlayerOrThrow();
+		Store.say(p, ArcadeItems.upgrade(p), Formatting.YELLOW);
 		return 1;
 	}
 

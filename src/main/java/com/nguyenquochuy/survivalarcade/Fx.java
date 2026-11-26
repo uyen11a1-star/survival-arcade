@@ -165,4 +165,11 @@ public final class Fx {
 			});
 		}
 	}
+
+	/** Cột hạt bắn thẳng lên trời, hiện cho một người xem ở rất xa (force). */
+	public static void beam(ServerWorld w, ServerPlayerEntity viewer, double x, double y, double z, ParticleEffect type) {
+		for (int i = 0; i <= 60; i += 3) {
+			w.spawnParticles(viewer, type, true, true, x, y + i, z, 1, 0, 0, 0, 0);
+		}
+	}
 }

@@ -1,0 +1,46 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "L L",
+    " S ",
+    "LDL"
+  ],
+  "key": {
+    "L": "minecraft:lightning_rod",
+    "S": "minecraft:netherite_sword",
+    "D": "minecraft:diamond_block"
+  },
+  "result": {
+    "id": "minecraft:netherite_sword",
+    "count": 1,
+    "components": {
+      "minecraft:custom_name": {
+        "text": "Kiếm Sấm Sét",
+        "color": "aqua",
+        "bold": true,
+        "italic": false
+      },
+      "minecraft:lore": [
+        {
+          "text": "Chuột phải: gọi sét đánh quái đang ngắm",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "Sét lan sang quái ở gần",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "Không bao giờ hỏng",
+          "color": "gray",
+          "italic": false
+        }
+      ],
+      "minecraft:item_model": "survivalarcade:thunder_blade",
+      "minecraft:enchantment_glint_override": true,
+      "minecraft:unbreakable": {}
+    }
+  }
+}

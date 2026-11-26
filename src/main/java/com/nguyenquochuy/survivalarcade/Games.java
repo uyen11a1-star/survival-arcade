@@ -104,6 +104,8 @@ public final class Games {
 		if (t % 10 == 0) {
 			for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
 				ArcadeBook.ensure(p);
+				ArcadeItems.ensureSoulbound(p);
+				ArcadeItems.tickHeld(p);
 			}
 		}
 		if (t % 3 == 0) {
@@ -113,7 +115,10 @@ public final class Games {
 		}
 		if (t % 20 == 0) {
 			for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
-				if (p.isAlive()) Quests.login(p);
+				if (p.isAlive()) {
+					Quests.login(p);
+					ArcadeItems.tickCharm(p);
+				}
 			}
 			Events.tick(server, t);
 		}

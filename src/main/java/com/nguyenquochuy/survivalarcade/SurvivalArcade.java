@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.slf4j.Logger;
@@ -37,13 +38,19 @@ public class SurvivalArcade implements ModInitializer {
 
 		// gỡ sách khỏi túi đồ trước khi chết để không rơi ra đất; hồi sinh xong sẽ được cấp lại
 		ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) -> {
-			if (entity instanceof ServerPlayerEntity sp) ArcadeBook.strip(sp);
+			if (entity instanceof ServerPlayerEntity sp) {
+				ArcadeBook.strip(sp);
+				ArcadeItems.strip(sp);
+			}
 			return true;
 		});
+
+		UseItemCallback.EVENT.register(ArcadeItems::onUse);
 
 		PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
 			if (player instanceof ServerPlayerEntity sp) {
 				Quests.onMine(sp, state);
+				ArcadeItems.onBreak(sp, world, pos, state);
 			}
 		});
 

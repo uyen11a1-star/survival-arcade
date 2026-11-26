@@ -42,6 +42,7 @@ public final class Store {
 		public String weeklyId = "";
 		public int weeklyProgress;
 		public boolean weeklyDone;
+		public int dashLv, healLv, shockLv;
 	}
 
 	public record Weekly(String name, String cat, String catLabel) {}
