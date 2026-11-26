@@ -63,22 +63,22 @@ public final class Weapons {
 		return s <= 0 ? "SẴN SÀNG" : s + "s";
 	}
 
-	private static int cd(int base, int tier) {
-		return Math.max(20, (int) (base * (1.0 - 0.05 * tier)));
+	private static int cd(ServerPlayerEntity p, int base, int tier) {
+		return Math.max(20, (int) (base * (1.0 - 0.05 * tier) * Armor.cdFactor(p)));
 	}
 
 	// =====================================================================
 	// Tiện ích dùng chung
 	// =====================================================================
 
-	private static List<HostileEntity> hostiles(ServerWorld w, Vec3d c, double r) {
+	static List<HostileEntity> hostiles(ServerWorld w, Vec3d c, double r) {
 		Box b = new Box(c.x - r, c.y - r, c.z - r, c.x + r, c.y + r, c.z + r);
 		return new ArrayList<>(w.getEntitiesByClass(HostileEntity.class, b,
 			e -> e.isAlive() && e.squaredDistanceTo(c.x, c.y, c.z) <= r * r));
 	}
 
 	/** Gây sát thương cho quái thù địch quanh một điểm (chỉ quái, không đụng người chơi hay dân làng). */
-	private static void hit(ServerWorld w, UUID owner, Vec3d c, double radius, float dmg, double push, float igniteSec) {
+	static void hit(ServerWorld w, UUID owner, Vec3d c, double radius, float dmg, double push, float igniteSec) {
 		ServerPlayerEntity src = Fx.player(owner);
 		if (src == null) return;
 		DamageSource ds = w.getDamageSources().playerAttack(src);
@@ -96,7 +96,7 @@ public final class Weapons {
 	}
 
 	/** Sét chỉ có hiệu ứng nhìn và âm thanh, không đốt cháy khối và không gây sát thương tự động. */
-	private static void bolt(ServerWorld w, double x, double y, double z) {
+	static void bolt(ServerWorld w, double x, double y, double z) {
 		BlockPos pos = new BlockPos((int) Math.floor(x), (int) Math.floor(y), (int) Math.floor(z));
 		EntityType.LIGHTNING_BOLT.spawn(w, e -> e.setCosmetic(true), pos, SpawnReason.EVENT, false, false);
 	}
@@ -135,10 +135,10 @@ public final class Weapons {
 	// =====================================================================
 
 	private static String thunder(ServerPlayerEntity p, int tier) {
-		int left = Cd.use(p, "thunder", cd(100, tier));
+		int left = Cd.use(p, "thunder", cd(p, 100, tier));
 		if (left > 0) return "Kiếm Sấm Sét còn hồi chiêu " + left + " giây.";
 		ServerWorld w = p.getEntityWorld();
-		double mult = 1.0 + 0.15 * tier;
+		double mult = (1.0 + 0.15 * tier) * Armor.powerMult(p);
 		UUID id = p.getUuid();
 		Vec3d t = aim(w, p, 24);
 		bolt(w, t.x, t.y, t.z);
@@ -167,7 +167,7 @@ public final class Weapons {
 	// =====================================================================
 
 	private static String blink(ServerPlayerEntity p, int tier) {
-		int left = Cd.use(p, "blink", cd(60, tier));
+		int left = Cd.use(p, "blink", cd(p, 60, tier));
 		if (left > 0) return "Gậy Dịch Chuyển còn hồi chiêu " + left + " giây.";
 		ServerWorld w = p.getEntityWorld();
 		Vec3d look = p.getRotationVector();
@@ -213,9 +213,9 @@ public final class Weapons {
 			Fx.sound(p, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1.6f);
 			return null;
 		}
-		int left = Cd.use(p, "wand:" + mode, cd(MODE_CD[mode], tier));
+		int left = Cd.use(p, "wand:" + mode, cd(p, MODE_CD[mode], tier));
 		if (left > 0) return MODES[mode] + " còn hồi chiêu " + left + " giây.";
-		double mult = 1.0 + 0.15 * tier;
+		double mult = (1.0 + 0.15 * tier) * Armor.powerMult(p);
 		Fx.title(p, MODES[mode].toUpperCase(), "Gậy Quyền Năng", MODE_COLORS[mode]);
 		switch (mode) {
 			case 0 -> meteor(p, mult);

@@ -77,7 +77,18 @@ public final class ArcadeItems {
 		Map.entry("minecraft:compass", Items.COMPASS),
 		Map.entry("minecraft:nether_star", Items.NETHER_STAR),
 		Map.entry("minecraft:stick", Items.STICK),
-		Map.entry("minecraft:heart_of_the_sea", Items.HEART_OF_THE_SEA)
+		Map.entry("minecraft:heart_of_the_sea", Items.HEART_OF_THE_SEA),
+		Map.entry("minecraft:crying_obsidian", Items.CRYING_OBSIDIAN),
+		Map.entry("minecraft:gold_block", Items.GOLD_BLOCK),
+		Map.entry("minecraft:iron_block", Items.IRON_BLOCK),
+		Map.entry("minecraft:shield", Items.SHIELD),
+		Map.entry("minecraft:obsidian", Items.OBSIDIAN),
+		Map.entry("minecraft:phantom_membrane", Items.PHANTOM_MEMBRANE),
+		Map.entry("minecraft:netherite_ingot", Items.NETHERITE_INGOT),
+		Map.entry("minecraft:netherite_helmet", Items.NETHERITE_HELMET),
+		Map.entry("minecraft:netherite_chestplate", Items.NETHERITE_CHESTPLATE),
+		Map.entry("minecraft:netherite_leggings", Items.NETHERITE_LEGGINGS),
+		Map.entry("minecraft:netherite_boots", Items.NETHERITE_BOOTS)
 	);
 
 	private ArcadeItems() {}

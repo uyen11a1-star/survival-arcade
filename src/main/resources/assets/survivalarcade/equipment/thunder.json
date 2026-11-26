@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "survivalarcade:thunder"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "survivalarcade:thunder"
+      }
+    ]
+  }
+}

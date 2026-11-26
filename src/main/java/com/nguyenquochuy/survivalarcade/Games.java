@@ -118,6 +118,7 @@ public final class Games {
 				if (p.isAlive()) {
 					Quests.login(p);
 					ArcadeItems.tickCharm(p);
+					Armor.tick(p);
 				}
 			}
 			Events.tick(server, t);

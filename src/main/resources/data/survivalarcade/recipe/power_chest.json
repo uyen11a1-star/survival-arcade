@@ -1,0 +1,49 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "ABA",
+    " P "
+  ],
+  "key": {
+    "A": "minecraft:netherite_ingot",
+    "B": "minecraft:nether_star",
+    "P": "minecraft:netherite_chestplate"
+  },
+  "result": {
+    "id": "minecraft:netherite_chestplate",
+    "count": 1,
+    "components": {
+      "minecraft:custom_name": {
+        "text": "Giáp Ngực Quyền Năng",
+        "color": "yellow",
+        "bold": true,
+        "italic": false
+      },
+      "minecraft:lore": [
+        {
+          "text": "Bộ Quyền Năng",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "2 món: Giảm sát thương I, giảm 15% hồi chiêu",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "4 món: Sức mạnh I, tự hồi máu, giảm 30% hồi chiêu, +25% sát thương chiêu, vòng hào quang trên đầu",
+          "color": "gray",
+          "italic": false
+        }
+      ],
+      "minecraft:item_model": "survivalarcade:power_chest",
+      "minecraft:enchantment_glint_override": true,
+      "minecraft:unbreakable": {},
+      "minecraft:equippable": {
+        "slot": "chest",
+        "asset_id": "survivalarcade:power"
+      }
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "ABA",
+    " P "
+  ],
+  "key": {
+    "A": "minecraft:iron_block",
+    "B": "minecraft:shield",
+    "P": "minecraft:netherite_leggings"
+  },
+  "result": {
+    "id": "minecraft:netherite_leggings",
+    "count": 1,
+    "components": {
+      "minecraft:custom_name": {
+        "text": "Quần Hộ Vệ",
+        "color": "white",
+        "bold": true,
+        "italic": false
+      },
+      "minecraft:lore": [
+        {
+          "text": "Bộ Hộ Vệ",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "2 món: Giảm sát thương I",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "4 món: Giảm sát thương II, khiên vàng tự hồi mỗi 20 giây",
+          "color": "gray",
+          "italic": false
+        }
+      ],
+      "minecraft:item_model": "survivalarcade:guardian_legs",
+      "minecraft:enchantment_glint_override": true,
+      "minecraft:unbreakable": {},
+      "minecraft:equippable": {
+        "slot": "legs",
+        "asset_id": "survivalarcade:guardian"
+      }
+    }
+  }
+}

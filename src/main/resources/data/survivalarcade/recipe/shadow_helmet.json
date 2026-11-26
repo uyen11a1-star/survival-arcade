@@ -1,0 +1,49 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "ABA",
+    " P "
+  ],
+  "key": {
+    "A": "minecraft:obsidian",
+    "B": "minecraft:phantom_membrane",
+    "P": "minecraft:netherite_helmet"
+  },
+  "result": {
+    "id": "minecraft:netherite_helmet",
+    "count": 1,
+    "components": {
+      "minecraft:custom_name": {
+        "text": "Mũ Bóng Đêm",
+        "color": "dark_gray",
+        "bold": true,
+        "italic": false
+      },
+      "minecraft:lore": [
+        {
+          "text": "Bộ Bóng Đêm",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "2 món: Nhìn đêm",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "4 món: ngồi xuống để tàng hình, ban đêm chạy nhanh",
+          "color": "gray",
+          "italic": false
+        }
+      ],
+      "minecraft:item_model": "survivalarcade:shadow_helmet",
+      "minecraft:enchantment_glint_override": true,
+      "minecraft:unbreakable": {},
+      "minecraft:equippable": {
+        "slot": "head",
+        "asset_id": "survivalarcade:shadow"
+      }
+    }
+  }
+}

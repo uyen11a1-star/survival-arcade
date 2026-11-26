@@ -81,7 +81,7 @@ public final class Skills {
 		int lv = Store.level(Store.get(p).xp);
 		if (lv < s.minLevel()) return "Cần cấp " + s.minLevel() + " để dùng " + s.name() + " (bạn đang cấp " + lv + ").";
 		int tl = treeLv(p, id);
-		int cd = Math.max(20, (int) (s.cooldown() * (1.0 - 0.08 * tl)));
+		int cd = Math.max(20, (int) (s.cooldown() * (1.0 - 0.08 * tl) * Armor.cdFactor(p)));
 		int left = Cd.use(p, "skill:" + id, cd);
 		if (left > 0) return s.name() + " còn hồi chiêu " + left + " giây.";
 		switch (id) {

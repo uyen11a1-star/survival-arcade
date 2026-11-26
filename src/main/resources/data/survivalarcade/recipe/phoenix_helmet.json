@@ -1,0 +1,49 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "ABA",
+    " P "
+  ],
+  "key": {
+    "A": "minecraft:blaze_rod",
+    "B": "minecraft:gold_block",
+    "P": "minecraft:netherite_helmet"
+  },
+  "result": {
+    "id": "minecraft:netherite_helmet",
+    "count": 1,
+    "components": {
+      "minecraft:custom_name": {
+        "text": "Mũ Phượng Hoàng",
+        "color": "gold",
+        "bold": true,
+        "italic": false
+      },
+      "minecraft:lore": [
+        {
+          "text": "Bộ Phượng Hoàng",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "2 món: Miễn nhiễm lửa",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "4 món: tự hồi máu khi dưới 50%, chết một lần được hồi sinh kèm sóng lửa (hồi 5 phút)",
+          "color": "gray",
+          "italic": false
+        }
+      ],
+      "minecraft:item_model": "survivalarcade:phoenix_helmet",
+      "minecraft:enchantment_glint_override": true,
+      "minecraft:unbreakable": {},
+      "minecraft:equippable": {
+        "slot": "head",
+        "asset_id": "survivalarcade:phoenix"
+      }
+    }
+  }
+}

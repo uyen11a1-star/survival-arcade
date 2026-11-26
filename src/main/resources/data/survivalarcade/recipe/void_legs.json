@@ -1,0 +1,49 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "ABA",
+    " P "
+  ],
+  "key": {
+    "A": "minecraft:ender_eye",
+    "B": "minecraft:crying_obsidian",
+    "P": "minecraft:netherite_leggings"
+  },
+  "result": {
+    "id": "minecraft:netherite_leggings",
+    "count": 1,
+    "components": {
+      "minecraft:custom_name": {
+        "text": "Quần Hư Không",
+        "color": "dark_purple",
+        "bold": true,
+        "italic": false
+      },
+      "minecraft:lore": [
+        {
+          "text": "Bộ Hư Không",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "2 món: Nhảy cao",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "4 món: 20% né đòn bằng cách chớp đi, sắp chết tự thoát thân (hồi 3 phút)",
+          "color": "gray",
+          "italic": false
+        }
+      ],
+      "minecraft:item_model": "survivalarcade:void_legs",
+      "minecraft:enchantment_glint_override": true,
+      "minecraft:unbreakable": {},
+      "minecraft:equippable": {
+        "slot": "legs",
+        "asset_id": "survivalarcade:void"
+      }
+    }
+  }
+}

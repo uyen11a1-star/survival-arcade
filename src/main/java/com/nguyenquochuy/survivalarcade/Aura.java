@@ -11,6 +11,7 @@ public final class Aura {
 
 	/** Gọi mỗi 3 tick cho từng người chơi. */
 	public static void tick(ServerPlayerEntity p, int t) {
+		if (Armor.pieces(p, "power") >= 4) Armor.halo(p, t);
 		int lv = Store.level(Store.get(p).xp);
 		if (lv < 2) return;
 		ServerWorld w = p.getEntityWorld();

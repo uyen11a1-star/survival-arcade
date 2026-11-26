@@ -37,8 +37,11 @@ public class SurvivalArcade implements ModInitializer {
 		});
 
 		// gỡ sách khỏi túi đồ trước khi chết để không rơi ra đất; hồi sinh xong sẽ được cấp lại
+		ServerLivingEntityEvents.ALLOW_DAMAGE.register(Armor::allowDamage);
+
 		ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) -> {
 			if (entity instanceof ServerPlayerEntity sp) {
+				if (!Armor.allowDeath(sp)) return false;
 				ArcadeBook.strip(sp);
 				ArcadeItems.strip(sp);
 			}

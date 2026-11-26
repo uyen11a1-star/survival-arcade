@@ -1,0 +1,49 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "ABA",
+    " P "
+  ],
+  "key": {
+    "A": "minecraft:lightning_rod",
+    "B": "minecraft:diamond_block",
+    "P": "minecraft:netherite_boots"
+  },
+  "result": {
+    "id": "minecraft:netherite_boots",
+    "count": 1,
+    "components": {
+      "minecraft:custom_name": {
+        "text": "Giày Sấm Sét",
+        "color": "aqua",
+        "bold": true,
+        "italic": false
+      },
+      "minecraft:lore": [
+        {
+          "text": "Bộ Sấm Sét",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "2 món: Tốc độ I",
+          "color": "gray",
+          "italic": false
+        },
+        {
+          "text": "4 món: Tốc độ II, Đào nhanh I, sét tự đánh quái ở gần",
+          "color": "gray",
+          "italic": false
+        }
+      ],
+      "minecraft:item_model": "survivalarcade:thunder_boots",
+      "minecraft:enchantment_glint_override": true,
+      "minecraft:unbreakable": {},
+      "minecraft:equippable": {
+        "slot": "feet",
+        "asset_id": "survivalarcade:thunder"
+      }
+    }
+  }
+}
