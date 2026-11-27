@@ -128,7 +128,7 @@ public final class ArcadeItems {
 
 	private static boolean isSoulbound(ItemStack s) {
 		String id = id(s);
-		return id != null && SOULBOUND.contains(id);
+		return id != null && (SOULBOUND.contains(id) || id.startsWith("askill_"));
 	}
 
 	/** Bậc nâng cấp, đọc từ đuôi "+N" của tên vật phẩm. */
@@ -188,6 +188,34 @@ public final class ArcadeItems {
 		for (String sid : SOULBOUND) {
 			if (!has(p, sid) && inv.getEmptySlot() >= 0) inv.offerOrDrop(soulbound(sid));
 		}
+		ensureArmorSkill(p);
+	}
+
+	private static ItemStack askill(String set) {
+		String id = "askill_" + set;
+		return switch (set) {
+			case "thunder" -> make(Items.AMETHYST_SHARD, id, "Bão Điện", Formatting.AQUA, "Tuyệt chiêu bộ Sấm Sét: lướt xuyên quái bằng sét");
+			case "void" -> make(Items.ECHO_SHARD, id, "Nuốt Chửng", Formatting.DARK_PURPLE, "Tuyệt chiêu bộ Hư Không: xoáy đen hút và nổ quái quanh bạn");
+			case "phoenix" -> make(Items.MAGMA_CREAM, id, "Giáng Lâm", Formatting.GOLD, "Tuyệt chiêu bộ Phượng Hoàng: cánh lửa và mưa cầu lửa");
+			case "guardian" -> make(Items.IRON_INGOT, id, "Pháo Đài", Formatting.WHITE, "Tuyệt chiêu bộ Hộ Vệ: bất khả xâm phạm 5 giây rồi dội sóng đẩy lùi");
+			case "shadow" -> make(Items.PHANTOM_MEMBRANE, id, "Biến Mất", Formatting.DARK_GRAY, "Tuyệt chiêu bộ Bóng Đêm: tàng hình, chớp ra sau lưng quái và đâm chí mạng");
+			default -> make(Items.NETHER_STAR, id, "Thức Tỉnh", Formatting.YELLOW, "Tuyệt chiêu bộ Quyền Năng: tăng sức mạnh, hồi mọi chiêu, giáng sét");
+		};
+	}
+
+	/** Mặc đủ 4 món một bộ giáp thì có vật phẩm tuyệt chiêu của bộ đó; cởi ra thì vật phẩm biến mất. */
+	private static void ensureArmorSkill(ServerPlayerEntity p) {
+		String set = Armor.fullSet(p);
+		String want = set == null ? null : "askill_" + set;
+		PlayerInventory inv = p.getInventory();
+		boolean found = false;
+		for (int i = 0; i < inv.size(); i++) {
+			String id = id(inv.getStack(i));
+			if (id == null || !id.startsWith("askill_")) continue;
+			if (id.equals(want) && !found) found = true;
+			else inv.setStack(i, ItemStack.EMPTY);
+		}
+		if (want != null && !found && inv.getEmptySlot() >= 0) inv.offerOrDrop(askill(set));
 	}
 
 	/** Gỡ vật phẩm kỹ năng khỏi túi đồ trước khi chết. */
@@ -205,13 +233,13 @@ public final class ArcadeItems {
 	public static ActionResult onUse(PlayerEntity player, World world, Hand hand) {
 		ItemStack stack = player.getStackInHand(hand);
 		String id = id(stack);
-		if (id == null || !USABLE.contains(id)) return ActionResult.PASS;
+		if (id == null || !(USABLE.contains(id) || id.startsWith("askill_"))) return ActionResult.PASS;
 		if (!(player instanceof ServerPlayerEntity sp)) return ActionResult.SUCCESS; // phía client chỉ để vung tay
 		String err = switch (id) {
 			case "skill_dash" -> Skills.use(sp, "dash");
 			case "skill_heal" -> Skills.use(sp, "heal");
 			case "skill_shock" -> Skills.use(sp, "shock");
-			default -> Weapons.use(sp, id, tierOf(stack));
+			default -> id.startsWith("askill_") ? Armor.useSkill(sp, id.substring(7)) : Weapons.use(sp, id, tierOf(stack));
 		};
 		if (err != null) Store.bar(sp, err);
 		return ActionResult.SUCCESS;
@@ -331,7 +359,7 @@ public final class ArcadeItems {
 			case "skill_heal" -> Skills.status(p, "heal");
 			case "skill_shock" -> Skills.status(p, "shock");
 			case "hunter_compass" -> Events.trackLine(p);
-			default -> Weapons.hud(p, id);
+			default -> id.startsWith("askill_") ? Armor.skillStatus(p, id.substring(7)) : Weapons.hud(p, id);
 		};
 		if (hud != null) Store.bar(p, hud);
 	}

@@ -261,7 +261,7 @@ public final class Weapons {
 	}
 
 	/** Bão Sét: 10 tia sét giáng liên tiếp xuống quái quanh người chơi. */
-	private static void storm(ServerPlayerEntity p, double mult) {
+	static void storm(ServerPlayerEntity p, double mult) {
 		UUID id = p.getUuid();
 		for (int i = 0; i < 10; i++) {
 			Fx.later(i * 4, () -> {
@@ -288,9 +288,12 @@ public final class Weapons {
 
 	/** Hố Đen: hút quái vào tâm xoáy trong 3 giây rồi nổ tung. */
 	private static void blackHole(ServerPlayerEntity p, double mult) {
+		blackHoleAt(p, aim(p.getEntityWorld(), p, 20), mult);
+	}
+
+	static void blackHoleAt(ServerPlayerEntity p, Vec3d c, double mult) {
 		ServerWorld w = p.getEntityWorld();
 		UUID id = p.getUuid();
-		Vec3d c = aim(w, p, 20);
 		for (int i = 0; i < 60; i += 2) {
 			final int k = i;
 			Fx.later(k, () -> {
